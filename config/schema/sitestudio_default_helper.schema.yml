@@ -1,0 +1,3 @@
+field.widget.third_party.sitestudio_default_helper:
+  type: string
+  label: 'Default helper'

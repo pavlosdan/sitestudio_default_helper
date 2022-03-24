@@ -1,0 +1,62 @@
+<?php
+
+/**
+ * @file
+ * Site Studio default helper module.
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Field\FieldDefinitionInterface;
+use Drupal\Core\Field\WidgetInterface;
+
+/**
+ * Implements hook_field_widget_third_party_settings_form().
+ */
+function sitestudio_default_helper_field_widget_third_party_settings_form(
+  WidgetInterface $plugin,
+  FieldDefinitionInterface $field_definition,
+  $form_mode,
+  $form,
+  FormStateInterface $form_state
+) {
+  if ($plugin->getPluginId() == 'cohesion_layout_builder_widget') {
+    $helpers = \Drupal::entityTypeManager()->getStorage('cohesion_helper')->loadMultiple();
+    $options = [];
+    foreach ($helpers as $helper) {
+      $options[$helper->id()] = $helper->label();
+    }
+
+    $element['default_helper'] = [
+      '#type' => 'select',
+      '#title' => t('Default Helper'),
+      '#default_value' => $plugin->getThirdPartySetting('sitestudio_default_helper', 'default_helper'),
+      '#options' => $options,
+    ];
+    return $element;
+  }
+}
+
+/**
+ * Implements hook_field_widget_settings_summary_alter().
+ */
+function sitestudio_default_helper_field_widget_settings_summary_alter(&$summary, $context) {
+  if ($context['widget']->getPluginId() == 'cohesion_layout_builder_widget') {
+    if ($default_helper = $context['widget']->getThirdPartySetting('sitestudio_default_helper', 'default_helper')) {
+      $helper = \Drupal::entityTypeManager()->getStorage('cohesion_helper')->load($default_helper);
+      $summary[] = t('Default helper: %helper.', ['%helper' => $helper->label()]);
+    }
+  }
+}
+
+/**
+ * Implements hook_field_widget_form_alter().
+ */
+function sitestudio_default_helper_field_widget_form_alter(&$element, FormStateInterface $form_state, $context) {
+  if ($context['widget']->getPluginId() == 'cohesion_layout_builder_widget'
+    && $helper_id = $context['widget']->getThirdPartySetting('sitestudio_default_helper', 'default_helper')
+  ) {
+    $helper = \Drupal::entityTypeManager()->getStorage('cohesion_helper')->load($helper_id);
+    $helper_json_values = $helper->get("json_values");
+    $element['target_id']['#json_values'] = $helper_json_values;
+  }
+}

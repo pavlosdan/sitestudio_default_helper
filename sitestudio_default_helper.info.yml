@@ -1,0 +1,7 @@
+name: Site Studio Default Helper
+type: module
+description: Allows site builders to select a default helper for a layout canvas field.
+package: Site Studio
+core_version_requirement: ^8.9 || ^9
+dependencies:
+  - cohesion:cohesion

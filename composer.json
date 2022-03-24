@@ -1,0 +1,17 @@
+
+{
+    "name": "acquia/sitestudio_default_helper",
+    "type": "drupal-module",
+    "description": "Allows loading a default helper into a layout canvas field.",
+    "license": "GPL-2.0+",
+    "authors": [
+        {
+        "name": "Acquia Engineering",
+        "homepage": "https://www.acquia.com",
+        "role": "Maintainer"
+        }
+    ],
+    "require": {
+        "acquia/cohesion": ">=6.8.0"
+    }
+}
